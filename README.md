@@ -1,14 +1,14 @@
 # 跨平台系统探针
 
 **克隆代码**  
-git clone https://github.com/zero-ljz/sysinfo.git
+git clone https://github.com/zero-ljz/sysinfo.git  
 cd sysinfo
 
 **安装依赖**  
 pip install -r requirements.txt
 
-**启动服务器**
-python3 app.py
+**启动服务器并在后台运行**
+nohup python3 app.py &
 
 **使用说明**  
 * index.html文件支持直接在本地用浏览器打开  
