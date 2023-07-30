@@ -1,0 +1,5 @@
+# 为了确保应用依赖从你的虚拟环境/主机移植到你的容器中，在终端运行'pip freeze > requirements.txt'来覆盖这个文件
+bottle==0.12.25
+gevent-websocket
+psutil
+py-cpuinfo==9.0.0
