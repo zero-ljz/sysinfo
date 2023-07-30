@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>系统信息</title>
+    <style>
+        /* 样式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .server-info {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            white-space: pre;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>我的服务器</h1>
+
+    <!-- 多个服务器信息区域 -->
+    <div id="server-info-container">
+
+    </div>
+
+    <script>
+        // JavaScript 代码
+        function connectWebSocket(url, elementId) {
+            const socket = new WebSocket(url);
+
+            // 当 WebSocket 连接成功时
+            socket.onopen = () => {
+                console.log(`WebSocket连接已建立: ${url}`);
+                // 初始化实时磁盘读写速度数据
+                window[elementId + '-readBytes'] = 0;
+                window[elementId + '-writeBytes'] = 0;
+
+                // 初始化实时网速数据
+                window[elementId + '-bytesRecv'] = 0;
+                window[elementId + '-bytesSent'] = 0;
+            };
+
+            // 当收到 WebSocket 消息时
+            socket.onmessage = (event) => {
+                const systemInfo = JSON.parse(event.data);
+
+                // 将系统信息格式化为人类可读的文本
+                const formattedSystemInfo = `
+                    操作系统: ${systemInfo.os} ${systemInfo.version} (${systemInfo.machine})
+                    发行版本: ${systemInfo.release}
+                    主机名: ${systemInfo.node}
+                    处理器: ${systemInfo.processor}
+                    CPU 使用率: ${systemInfo.cpu_usage.toFixed(2)}%
+                    <meter min="0" max="100" value="${systemInfo.cpu_usage}"></meter>
+                    CPU 频率: ${systemInfo.cpu_freq.toFixed(2)} MHz
+                    CPU 核心数: ${systemInfo.cpu_cores}
+                    内存使用情况:
+                      总计: ${formatBytes(systemInfo.memory.total)}
+                      可用: ${formatBytes(systemInfo.memory.available)}
+                      已用: ${formatBytes(systemInfo.memory.used)}
+                      使用率: ${systemInfo.memory.percent.toFixed(2)}%
+                      <meter min="0" max="100" value="${systemInfo.memory.percent}"></meter>
+                    交换分区使用情况:
+                      总计: ${formatBytes(systemInfo.swap.total)}
+                      已用: ${formatBytes(systemInfo.swap.used)}
+                      使用率: ${systemInfo.swap.percent.toFixed(2)}%
+                      <meter min="0" max="100" value="${systemInfo.swap.percent}"></meter>
+                    磁盘使用情况:
+                      总计: ${formatBytes(systemInfo.disk.total)}
+                      可用: ${formatBytes(systemInfo.disk.free)}
+                      已用: ${formatBytes(systemInfo.disk.used)}
+                      使用率: ${systemInfo.disk.percent.toFixed(2)}%
+                      <meter min="0" max="100" value="${systemInfo.disk.percent}"></meter>
+                    磁盘 I/O 统计:
+                      读取: ${formatBytes(systemInfo.disk_io.read_bytes)} (${getNetworkSpeed(elementId + '-readBytes', systemInfo.disk_io.read_bytes)} /s)
+                      写入: ${formatBytes(systemInfo.disk_io.write_bytes)} (${getNetworkSpeed(elementId + '-writeBytes', systemInfo.disk_io.write_bytes)} /s)
+                      平均读取时间: ${systemInfo.disk_io.read_time} 毫秒
+                      平均写入时间: ${systemInfo.disk_io.write_time} 毫秒
+                    系统负载: ${systemInfo.load_avg.map(avg => avg.toFixed(2)).join(', ')}
+                    进程数: ${systemInfo.process_count}
+                    已运行时间: ${formatReadableTime(systemInfo.timestamp - systemInfo.boot_time)}
+                    当前时间: ${systemInfo.current_time}
+                    时区: ${systemInfo.time_zone}
+                    网络 I/O 统计:
+                      接收: ${formatBytes(systemInfo.network.bytes_recv)} (${getNetworkSpeed(elementId + '-bytesRecv', systemInfo.network.bytes_recv)} /s)
+                      发送: ${formatBytes(systemInfo.network.bytes_sent)} (${getNetworkSpeed(elementId + '-bytesSent', systemInfo.network.bytes_sent)} /s)
+                `;
+
+                // 更新实时磁盘读写速度数据
+                window[elementId + '-readBytes'] = systemInfo.disk_io.read_bytes;
+                window[elementId + '-writeBytes'] = systemInfo.disk_io.write_bytes;
+
+                // 更新实时网速数据
+                window[elementId + '-bytesRecv'] = systemInfo.network.bytes_recv;
+                window[elementId + '-bytesSent'] = systemInfo.network.bytes_sent;
+
+                document.getElementById(elementId).innerHTML = formattedSystemInfo;
+            };
+
+            // 当 WebSocket 连接关闭时
+            socket.onclose = () => {
+                console.log(`WebSocket连接已关闭: ${url}`);
+            };
+        }
+
+        const query = new URLSearchParams(window.location.search);
+        const urlsString = query.get('urls');
+        const urls = urlsString ? urlsString.split(',') : [];
+
+        if(urls.length==0){
+            createServerInfoDiv('ws://127.0.0.1:3000/ws/', 'server-info-1');
+        }
+        else
+        {
+            // 循环遍历每个 URL，并调用 createServerInfoDiv 函数
+            for (let i = 0; i < urls.length; i++) {
+                const url = urls[i];
+                const elementId = `server-info-${i + 1}`;
+                createServerInfoDiv(url, elementId);
+            }
+        }
+
+        // 动态创建 <div> 元素和调用 connectWebSocket 函数
+        function createServerInfoDiv(url, elementId) {
+            const serverInfoContainer = document.getElementById('server-info-container');
+
+            // 创建 <div> 元素
+            const serverInfoDiv = document.createElement('div');
+            serverInfoDiv.classList.add('server-info');
+            serverInfoDiv.id = elementId;
+            serverInfoDiv.textContent = '等待服务器信息...';
+
+            // 将 <div> 元素添加到容器中
+            serverInfoContainer.appendChild(serverInfoDiv);
+
+            // 连接 WebSocket 服务器
+            connectWebSocket(url, elementId);
+        }
+
+        // 辅助函数：格式化字节数为可读的文本
+        function formatBytes(bytes) {
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            if (bytes === 0) return '0 Byte';
+            const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+        }
+
+        // 辅助函数：格式化时间戳为可读的文本
+        function formatReadableTime(timestamp) {
+            const totalSeconds = Math.floor(timestamp);
+            const days = Math.floor(totalSeconds / (3600 * 24));
+            const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return `${days} 天 ${hours} 小时 ${minutes} 分钟 ${seconds} 秒`;
+        }
+
+        // 辅助函数：计算实时网速
+        function getNetworkSpeed(lastBytesKey, currentBytes) {
+            const lastBytes = window[lastBytesKey] || 0;
+            const bytesDiff = currentBytes - lastBytes;
+            return formatBytes(bytesDiff);
+        }
+
+        function formatTimestampToTime(timestamp) {
+            const date = new Date(timestamp * 1000); // JavaScript中时间戳单位是毫秒，所以要乘以1000转换为秒
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份从0开始，需要加1
+            const day = date.getDate().toString().padStart(2, '0');
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+
+            const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            return formattedTime;
+        }
+    </script>
+</body>
+
+</html>
