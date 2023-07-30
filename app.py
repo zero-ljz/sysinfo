@@ -82,6 +82,6 @@ def index():
     return static_file('index.html', root='.')
 
 if __name__ == '__main__':
-    server = WSGIServer(('0.0.0.0', 3000), app,
+    server = WSGIServer(('0.0.0.0', 8000), app,
                         handler_class=WebSocketHandler)
     server.serve_forever()
