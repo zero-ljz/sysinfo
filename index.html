@@ -112,7 +112,7 @@
         const urls = urlsString ? urlsString.split(',') : [];
 
         if(urls.length==0){
-            createServerInfoDiv('ws://127.0.0.1:3000/ws/', 'server-info-1');
+            createServerInfoDiv('ws://' + location.host + '/ws/', 'server-info-1');
         }
         else
         {
