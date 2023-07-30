@@ -7,7 +7,7 @@ cd sysinfo
 **安装依赖**  
 pip install -r requirements.txt
 
-**启动服务器并在后台运行**
+**启动服务器并在后台运行**  
 nohup python3 app.py &
 
 **使用说明**  
