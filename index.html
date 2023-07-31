@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link rel="icon" href="data:," />
     <title>系统信息</title>
     <style>
@@ -51,42 +52,42 @@
 
                 // 将系统信息格式化为人类可读的文本
                 const formattedSystemInfo = `
-                    主机名: ${systemInfo.node}
-                    操作系统: ${systemInfo.os} ${systemInfo.version}
-                    发行版本: ${systemInfo.release}
-                    处理器: ${systemInfo.processor} (${systemInfo.machine})
+    主机名: ${systemInfo.node}
+    操作系统: ${systemInfo.os} ${systemInfo.version}
+    发行版本: ${systemInfo.release}
+    处理器: ${systemInfo.processor} (${systemInfo.machine})
 
-                    CPU <meter min="0" max="100" value="${systemInfo.cpu_usage}"></meter> ${systemInfo.cpu_usage.toFixed(2)}%
-                      频率: ${systemInfo.cpu_freq.toFixed(2)} MHz
-                      核心数: ${systemInfo.cpu_cores}
+    CPU <meter min="0" max="100" value="${systemInfo.cpu_usage}"></meter> ${systemInfo.cpu_usage.toFixed(2)}%
+      频率: ${systemInfo.cpu_freq.toFixed(2)} MHz
+      核心数: ${systemInfo.cpu_cores}
 
-                    内存 <meter min="0" max="100" value="${systemInfo.memory.percent}"></meter> ${systemInfo.memory.percent.toFixed(2)}%
-                      总计: ${formatBytes(systemInfo.memory.total)}
-                      可用: ${formatBytes(systemInfo.memory.available)}
-                      已用: ${formatBytes(systemInfo.memory.used)}
-                      
-                    交换 <meter min="0" max="100" value="${systemInfo.swap.percent}"></meter> ${systemInfo.swap.percent.toFixed(2)}%
-                      总计: ${formatBytes(systemInfo.swap.total)}
-                      已用: ${formatBytes(systemInfo.swap.used)}
-                      
-                    磁盘 <meter min="0" max="100" value="${systemInfo.disk.percent}"></meter> ${systemInfo.disk.percent.toFixed(2)}%
-                      总计: ${formatBytes(systemInfo.disk.total)}
-                      可用: ${formatBytes(systemInfo.disk.free)}
-                      已用: ${formatBytes(systemInfo.disk.used)}
-                      
-                    磁盘 I/O 统计:
-                      读取: ${formatBytes(systemInfo.disk_io.read_bytes)} (${getNetworkSpeed(elementId + '-readBytes', systemInfo.disk_io.read_bytes)} /s)
-                      写入: ${formatBytes(systemInfo.disk_io.write_bytes)} (${getNetworkSpeed(elementId + '-writeBytes', systemInfo.disk_io.write_bytes)} /s)
+    内存 <meter min="0" max="100" value="${systemInfo.memory.percent}"></meter> ${systemInfo.memory.percent.toFixed(2)}%
+      总计: ${formatBytes(systemInfo.memory.total)}
+      可用: ${formatBytes(systemInfo.memory.available)}
+      已用: ${formatBytes(systemInfo.memory.used)}
+      
+    交换 <meter min="0" max="100" value="${systemInfo.swap.percent}"></meter> ${systemInfo.swap.percent.toFixed(2)}%
+      总计: ${formatBytes(systemInfo.swap.total)}
+      已用: ${formatBytes(systemInfo.swap.used)}
+      
+    磁盘 <meter min="0" max="100" value="${systemInfo.disk.percent}"></meter> ${systemInfo.disk.percent.toFixed(2)}%
+      总计: ${formatBytes(systemInfo.disk.total)}
+      可用: ${formatBytes(systemInfo.disk.free)}
+      已用: ${formatBytes(systemInfo.disk.used)}
+      
+    磁盘 I/O 统计:
+      读取: ${formatBytes(systemInfo.disk_io.read_bytes)} (${getNetworkSpeed(elementId + '-readBytes', systemInfo.disk_io.read_bytes)} /s)
+      写入: ${formatBytes(systemInfo.disk_io.write_bytes)} (${getNetworkSpeed(elementId + '-writeBytes', systemInfo.disk_io.write_bytes)} /s)
 
-                    网络 I/O 统计:
-                      接收: ${formatBytes(systemInfo.network.bytes_recv)} (${getNetworkSpeed(elementId + '-bytesRecv', systemInfo.network.bytes_recv)} /s)
-                      发送: ${formatBytes(systemInfo.network.bytes_sent)} (${getNetworkSpeed(elementId + '-bytesSent', systemInfo.network.bytes_sent)} /s)
+    网络 I/O 统计:
+      接收: ${formatBytes(systemInfo.network.bytes_recv)} (${getNetworkSpeed(elementId + '-bytesRecv', systemInfo.network.bytes_recv)} /s)
+      发送: ${formatBytes(systemInfo.network.bytes_sent)} (${getNetworkSpeed(elementId + '-bytesSent', systemInfo.network.bytes_sent)} /s)
 
-                    系统负载: ${systemInfo.load_avg.map(avg => avg.toFixed(2)).join(', ')}
-                    进程数: ${systemInfo.process_count}
-                    已启动 ${formatReadableTime(systemInfo.timestamp - systemInfo.boot_time)}
-                    时间: ${systemInfo.current_time}
-                    时区: ${systemInfo.time_zone}
+    系统负载: ${systemInfo.load_avg.map(avg => avg.toFixed(2)).join(', ')}
+    进程数: ${systemInfo.process_count}
+    已启动 ${formatReadableTime(systemInfo.timestamp - systemInfo.boot_time)}
+    时间: ${systemInfo.current_time}
+    时区: ${systemInfo.time_zone}
                 `;
 
                 // 更新实时磁盘读写速度数据
