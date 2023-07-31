@@ -36,7 +36,7 @@ class SystemProbeWebSocket:
 
                 "cpu_usage": psutil.cpu_percent(),
                 "cpu_freq": psutil.cpu_freq().current,
-                "cpu_cores": psutil.cpu_count(logical=True),
+                "cpu_cores": psutil.cpu_count(logical=False),
                 "memory": psutil.virtual_memory()._asdict(),
                 "swap": psutil.swap_memory()._asdict(),
                 "disk": psutil.disk_usage('/')._asdict(),
