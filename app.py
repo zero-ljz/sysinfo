@@ -47,15 +47,16 @@ class SystemProbeWebSocket:
                 "boot_time": int(psutil.boot_time()),
                 #"ip_address": socket.gethostbyname(socket.gethostname()),
                 "timestamp": int(time.time()),
-                "current_time": str(datetime.datetime.now()),
+                "current_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "time_zone": datetime.datetime.now().astimezone().tzinfo.tzname(None),
             }
 
             # 将系统信息转换为 JSON 字符串
             json_data = json.dumps(system_info)
 
-            # 将 JSON 字符串发送给客户端
-            self.ws.send(json_data)
+            if not self.ws.closed:
+                # 将 JSON 字符串发送给客户端
+                self.ws.send(json_data)
 
             # 每秒钟发送一次数据
             gevent.sleep(1)
