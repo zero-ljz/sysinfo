@@ -53,13 +53,12 @@
                 // 将系统信息格式化为人类可读的文本
                 const formattedSystemInfo = `
     主机名: ${systemInfo.node}
-    操作系统: ${systemInfo.os} ${systemInfo.version}
+    操作系统: ${systemInfo.os} ${systemInfo.bits} ${systemInfo.version}
     发行版本: ${systemInfo.release}
     处理器: ${systemInfo.processor} (${systemInfo.machine})
 
     CPU <meter min="0" max="100" value="${systemInfo.cpu_usage}"></meter> ${systemInfo.cpu_usage.toFixed(2)}%
-      频率: ${systemInfo.cpu_freq.toFixed(2)} MHz
-      核心数: ${systemInfo.cpu_cores}
+      ${systemInfo.cpu_cores} 核心 ${systemInfo.cpu_threads} 线程 (${systemInfo.cpu_freq.toFixed(2)} MHz)
 
     内存 <meter min="0" max="100" value="${systemInfo.memory.percent}"></meter> ${systemInfo.memory.percent.toFixed(2)}%
       总计: ${formatBytes(systemInfo.memory.total)}
@@ -83,6 +82,7 @@
       接收: ${formatBytes(systemInfo.network.bytes_recv)} (${getNetworkSpeed(elementId + '-bytesRecv', systemInfo.network.bytes_recv)} /s)
       发送: ${formatBytes(systemInfo.network.bytes_sent)} (${getNetworkSpeed(elementId + '-bytesSent', systemInfo.network.bytes_sent)} /s)
 
+    内部IP: ${systemInfo.ip_address}
     系统负载: ${systemInfo.load_avg.map(avg => avg.toFixed(2)).join(', ')}
     进程数: ${systemInfo.process_count}
     已启动 ${formatReadableTime(systemInfo.timestamp - systemInfo.boot_time)}
