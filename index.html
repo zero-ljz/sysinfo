@@ -104,6 +104,12 @@
             // 当 WebSocket 连接关闭时
             socket.onclose = () => {
                 console.log(`WebSocket连接已关闭: ${url}`);
+
+                // 设置延时，过一段时间后重新连接 WebSocket
+                setTimeout(() => {
+                    console.log(`重新连接WebSocket: ${url}`);
+                    connectWebSocket(url, elementId);
+                }, 3000); // 重连间隔为3秒
             };
         }
 
