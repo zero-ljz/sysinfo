@@ -83,6 +83,8 @@
       发送: ${formatBytes(systemInfo.network.bytes_sent)} (${getNetworkSpeed(elementId + '-bytesSent', systemInfo.network.bytes_sent)} /s)
 
     内部IP: ${systemInfo.ip_address}
+    IPv4 TCP连接数: ${systemInfo.tcp4_connection_count}
+    IPv6 TCP连接数: ${systemInfo.tcp6_connection_count}
     系统负载: ${systemInfo.load_avg.map(avg => avg.toFixed(2)).join(', ')}
     进程数: ${systemInfo.process_count}
     已启动 ${formatReadableTime(systemInfo.timestamp - systemInfo.boot_time)}
