@@ -51,6 +51,8 @@ class SystemProbeWebSocket:
                 "process_count": len(psutil.pids()),
                 "boot_time": int(psutil.boot_time()),
                 "ip_address": ip_address,
+                "tcp4_connection_count": len(psutil.net_connections(kind="tcp4")),
+                "tcp6_connection_count": len(psutil.net_connections(kind="tcp6")),
                 "timestamp": int(time.time()),
                 "current_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "time_zone": datetime.datetime.now().astimezone().tzinfo.tzname(None),
