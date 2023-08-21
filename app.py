@@ -25,23 +25,33 @@ class SystemProbeWebSocket:
         self.ws = ws
 
     def send_system_info(self):
+        os = platform.system()
+        release = platform.release()
+        version = platform.version()
+        machine = platform.machine()
+        node = platform.node()
+
         cpu_info = cpuinfo.get_cpu_info()
         ip_address = socket.gethostbyname(socket.gethostname())
         bits, linkage = platform.architecture()
+
+        cpu_cores = psutil.cpu_count(logical=False)
+        cpu_threads = psutil.cpu_count(logical=True)
+
         while True:
             system_info = {
-                "os": platform.system(),
-                "release": platform.release(),
-                "version": platform.version(),
-                "machine": platform.machine(),
+                "os": os,
+                "release": release,
+                "version": version,
+                "machine": machine,
                 "processor": cpu_info['brand_raw'],
-                "node": platform.node(),
+                "node": node,
                 "bits": bits,
                 "linkage": linkage,
                 "cpu_usage": psutil.cpu_percent(),
                 "cpu_freq": psutil.cpu_freq().current,
-                "cpu_cores": psutil.cpu_count(logical=False),
-                "cpu_threads": psutil.cpu_count(logical=True),
+                "cpu_cores": cpu_cores,
+                "cpu_threads": cpu_threads,
                 "memory": psutil.virtual_memory()._asdict(),
                 "swap": psutil.swap_memory()._asdict(),
                 "disk": psutil.disk_usage('/')._asdict(),
@@ -70,8 +80,6 @@ class SystemProbeWebSocket:
 
             # 每秒钟发送一次数据
             gevent.sleep(1)
-
-
 
     def run(self):
         self.send_system_info()
