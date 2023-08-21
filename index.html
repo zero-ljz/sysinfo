@@ -52,7 +52,7 @@
 
                 // 将系统信息格式化为人类可读的文本
                 const formattedSystemInfo = `
-    主机名: ${systemInfo.node}
+    主机名: ${systemInfo.node} (${new URL(url).hostname})
     操作系统: ${systemInfo.os} ${systemInfo.bits} ${systemInfo.version}
     发行版本: ${systemInfo.release}
     处理器: ${systemInfo.processor} (${systemInfo.machine})
