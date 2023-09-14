@@ -1,9 +1,9 @@
+import argparse
 import datetime
 import platform
 import json
 import socket
 import time
-import argparse
 
 import psutil
 import cpuinfo
