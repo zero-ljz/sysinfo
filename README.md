@@ -8,7 +8,7 @@
 `pip install -r requirements.txt`  
 
 **启动服务器并在后台运行**  
-`nohup python3 app.py &`
+`nohup python3 app.py --port 8000 &`
 
 **使用说明**  
 * index.html文件支持直接在本地用浏览器打开  
