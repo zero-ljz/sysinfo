@@ -3,6 +3,7 @@ import platform
 import json
 import socket
 import time
+import argparse
 
 import psutil
 import cpuinfo
@@ -104,7 +105,16 @@ def handle_websocket():
 def index():
     return static_file('index.html', root='.')
 
-if __name__ == '__main__':
-    server = WSGIServer(('0.0.0.0', 8000), app,
+def main():
+    parser = argparse.ArgumentParser(description='Run the server.')
+    parser.add_argument('--host', '-H', default='0.0.0.0', help='Host to listen on (default: 0.0.0.0)')
+    parser.add_argument('--port', '-p', type=int, default=8000, help='Port to listen on (default: 8000)')
+    args = parser.parse_args()
+
+    print(f"Starting server on {args.host}:{args.port}...")
+    server = WSGIServer((args.host, args.port), app,
                         handler_class=WebSocketHandler)
     server.serve_forever()
+
+if __name__ == '__main__':
+    main()
