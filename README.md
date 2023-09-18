@@ -15,3 +15,6 @@
 * 支持在一个页面查看多台服务器
 * 访问静态文件时可以从url的参数中传入多个服务器的url  
 http://127.0.0.1:8000/?urls=ws://your_host1:8000/ws/,ws://your_host2:8000/ws/
+
+**Alpine 系统需要使用以下命令安装依赖**   
+`pip3 install bottle==0.12.25 gevent-websocket py-cpuinfo==9.0.0 && apk add py3-psutil`  
