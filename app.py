@@ -1,4 +1,3 @@
-import argparse
 import datetime
 import platform
 import json
@@ -106,6 +105,7 @@ def index():
     return static_file('index.html', root='.')
 
 def main():
+    import argparse
     parser = argparse.ArgumentParser(description='Run the server.')
     parser.add_argument('--host', '-H', default='0.0.0.0', help='Host to listen on (default: 0.0.0.0)')
     parser.add_argument('--port', '-p', type=int, default=8000, help='Port to listen on (default: 8000)')
