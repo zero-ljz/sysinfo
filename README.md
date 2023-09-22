@@ -1,17 +1,15 @@
 # 跨平台系统探针
 
-**克隆代码**  
-`git clone https://github.com/zero-ljz/sysinfo.git`  
-`cd sysinfo`  
-
 ``` bash
-# 创建虚拟环境和安装依赖
-python3 -m venv .venv
-source .venv/bin/activate
-pip3 install -r requirements.txt
+# 克隆代码 && 进入项目目录 && 安装依赖
+git clone https://github.com/zero-ljz/sysinfo.git && cd sysinfo \ 
+&& pip3 install -r requirements.txt
 
 # 启动服务器并在后台运行
-nohup python3 app.py --port 8000 &
+nohup python3 $(pwd)/app.py --port 8000 &
+
+# 终止运行
+pkill -f "python3 $(pwd)/app.py"
 ```
 
 **使用说明**  
@@ -24,4 +22,4 @@ http://127.0.0.1:8000/?urls=ws://your_host1:8000/ws/,ws://your_host2:8000/ws/
 `pip3 install bottle==0.12.25 gevent-websocket py-cpuinfo==9.0.0 && apk add py3-psutil`  
 
 
-bash fast.sh create_supervisor sysinfo "/root/repos/sysinfo/.venv/bin/python3 app.py --port 8100" "/root/repos/sysinfo/"
+bash fast.sh create_service sysinfo "python3 app.py --port 8100" "/root/repos/sysinfo/"
