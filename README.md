@@ -2,7 +2,7 @@
 
 ``` bash
 # 克隆代码 && 进入项目目录 && 安装依赖
-git clone https://github.com/zero-ljz/sysinfo.git && cd sysinfo \ 
+git clone https://github.com/zero-ljz/sysinfo.git && cd sysinfo \
 && pip3 install -r requirements.txt
 
 # 启动服务器并在后台运行
