@@ -22,4 +22,5 @@ http://127.0.0.1:8000/?urls=ws://your_host1:8000/ws/,ws://your_host2:8000/ws/
 `pip3 install bottle==0.12.25 gevent-websocket py-cpuinfo==9.0.0 && apk add py3-psutil`  
 
 
-bash fast.sh create_service sysinfo "python3 app.py --port 8100" "/root/repos/sysinfo/"
+bash fast.sh create_service sysinfo "python3 app.py --port 8100" "/root/repos/sysinfo/" \
+&& systemctl enable sysinfo && systemctl start sysinfo
