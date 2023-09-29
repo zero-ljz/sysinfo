@@ -38,59 +38,50 @@
             // 当 WebSocket 连接成功时
             socket.onopen = () => {
                 console.log(`WebSocket连接已建立: ${url}`);
-                // 初始化实时磁盘读写速度数据
-                window[elementId + '-readBytes'] = 0;
-                window[elementId + '-writeBytes'] = 0;
-
-                // 初始化实时网速数据
-                window[elementId + '-bytesRecv'] = 0;
-                window[elementId + '-bytesSent'] = 0;
             };
 
             // 当收到 WebSocket 消息时
             socket.onmessage = (event) => {
                 const systemInfo = JSON.parse(event.data);
-
-                // 将系统信息格式化为人类可读的文本
                 const formattedSystemInfo = `
-    主机名: ${systemInfo.node} (${new URL(url).hostname})
-    操作系统: ${systemInfo.os} ${systemInfo.bits} ${systemInfo.version}
-    发行版本: ${systemInfo.release}
-    处理器: ${systemInfo.processor} (${systemInfo.machine})
+    Host Name: ${systemInfo.node} (${new URL(url).hostname})
+    OS: ${systemInfo.os} ${systemInfo.bits} ${systemInfo.version}
+    Release: ${systemInfo.release}
+    CPU Model: ${systemInfo.processor} (${systemInfo.machine})
 
     CPU <meter min="0" max="100" value="${systemInfo.cpu_usage}"></meter> ${systemInfo.cpu_usage.toFixed(2)}%
-      ${systemInfo.cpu_cores} 核心 ${systemInfo.cpu_threads} 线程 (${systemInfo.cpu_freq.toFixed(2)} MHz)
+      ${systemInfo.cpu_cores} cores ${systemInfo.cpu_threads} threads (${systemInfo.cpu_freq.toFixed(2)} MHz)
 
-    内存 <meter min="0" max="100" value="${systemInfo.memory.percent}"></meter> ${systemInfo.memory.percent.toFixed(2)}%
-      总计: ${formatBytes(systemInfo.memory.total)}
-      可用: ${formatBytes(systemInfo.memory.available)}
-      已用: ${formatBytes(systemInfo.memory.used)}
+    RAM <meter min="0" max="100" value="${systemInfo.memory.percent}"></meter> ${systemInfo.memory.percent.toFixed(2)}%
+      Total: ${formatBytes(systemInfo.memory.total)}
+      Free: ${formatBytes(systemInfo.memory.available)}
+      Used: ${formatBytes(systemInfo.memory.used)}
       
     Swap <meter min="0" max="100" value="${systemInfo.swap.percent}"></meter> ${systemInfo.swap.percent.toFixed(2)}%
-      总计: ${formatBytes(systemInfo.swap.total)}
-      已用: ${formatBytes(systemInfo.swap.used)}
+      Total: ${formatBytes(systemInfo.swap.total)}
+      Used: ${formatBytes(systemInfo.swap.used)}
       
-    磁盘 <meter min="0" max="100" value="${systemInfo.disk.percent}"></meter> ${systemInfo.disk.percent.toFixed(2)}%
-      总计: ${formatBytes(systemInfo.disk.total)}
-      可用: ${formatBytes(systemInfo.disk.free)}
-      已用: ${formatBytes(systemInfo.disk.used)}
+    Disk <meter min="0" max="100" value="${systemInfo.disk.percent}"></meter> ${systemInfo.disk.percent.toFixed(2)}%
+      Total: ${formatBytes(systemInfo.disk.total)}
+      Free: ${formatBytes(systemInfo.disk.free)}
+      Used: ${formatBytes(systemInfo.disk.used)}
       
-    磁盘 I/O:
-      读取: ${formatBytes(systemInfo.disk_io.read_bytes)} (${getNetworkSpeed(elementId + '-readBytes', systemInfo.disk_io.read_bytes)} /s)
-      写入: ${formatBytes(systemInfo.disk_io.write_bytes)} (${getNetworkSpeed(elementId + '-writeBytes', systemInfo.disk_io.write_bytes)} /s)
+    Disk I/O:
+      Read: ${formatBytes(systemInfo.disk_io.read_bytes)} (${getNetworkSpeed(elementId + '-readBytes', systemInfo.disk_io.read_bytes)} /s)
+      Write: ${formatBytes(systemInfo.disk_io.write_bytes)} (${getNetworkSpeed(elementId + '-writeBytes', systemInfo.disk_io.write_bytes)} /s)
 
-    网络 I/O:
-      接收: ${formatBytes(systemInfo.network.bytes_recv)} (${getNetworkSpeed(elementId + '-bytesRecv', systemInfo.network.bytes_recv)} /s)
-      发送: ${formatBytes(systemInfo.network.bytes_sent)} (${getNetworkSpeed(elementId + '-bytesSent', systemInfo.network.bytes_sent)} /s)
+    NET I/O:
+      Recv: ${formatBytes(systemInfo.network.bytes_recv)} (${getNetworkSpeed(elementId + '-bytesRecv', systemInfo.network.bytes_recv)} /s)
+      Sent: ${formatBytes(systemInfo.network.bytes_sent)} (${getNetworkSpeed(elementId + '-bytesSent', systemInfo.network.bytes_sent)} /s)
 
-    内部IP: ${systemInfo.ip_address}
-    IPv4 TCP连接数: ${systemInfo.tcp4_connection_count}
-    IPv6 TCP连接数: ${systemInfo.tcp6_connection_count}
-    系统负载: ${systemInfo.load_avg.map(avg => avg.toFixed(2)).join(', ')}
-    进程数: ${systemInfo.process_count}
-    已启动 ${formatReadableTime(systemInfo.timestamp - systemInfo.boot_time)}
-    时间: ${systemInfo.current_time}
-    时区: ${systemInfo.time_zone}
+    Inside IP: ${systemInfo.ip_address}
+    IPv4 TCP Connections: ${systemInfo.tcp4_connection_count}
+    IPv6 TCP Connections: ${systemInfo.tcp6_connection_count}
+    Load Average: ${systemInfo.load_avg.map(avg => avg.toFixed(2)).join(', ')}
+    Processes: ${systemInfo.process_count}
+    Boot Time: ${formatReadableTime(systemInfo.timestamp - systemInfo.boot_time)}
+    Time: ${systemInfo.current_time}
+    Time Zone: ${systemInfo.time_zone}
                 `;
 
                 // 更新实时磁盘读写速度数据
@@ -106,13 +97,13 @@
 
             // 当 WebSocket 连接关闭时
             socket.onclose = () => {
-                console.log(`WebSocket连接已关闭: ${url}`);
+                console.log(`WebSocket connection closed: ${url}`);
 
                 // 设置延时，过一段时间后重新连接 WebSocket
                 setTimeout(() => {
-                    console.log(`重新连接WebSocket: ${url}`);
+                    console.log(`Retrying to connect: ${url}`);
                     connectWebSocket(url, elementId);
-                }, 3000); // 重连间隔为3秒
+                }, 3000); // 重连间隔
             };
         }
 
@@ -141,7 +132,7 @@
             const serverInfoDiv = document.createElement('div');
             serverInfoDiv.classList.add('server-info');
             serverInfoDiv.id = elementId;
-            serverInfoDiv.textContent = '等待服务器信息...';
+            serverInfoDiv.textContent = `Waiting for WebSocket connection on ${url}...`;
 
             // 将 <div> 元素添加到容器中
             serverInfoContainer.appendChild(serverInfoDiv);
@@ -165,7 +156,7 @@
             const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
             const minutes = Math.floor((totalSeconds % 3600) / 60);
             const seconds = totalSeconds % 60;
-            return `${days} 天 ${hours} 小时 ${minutes} 分钟 ${seconds} 秒`;
+            return `${days} Days ${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
         }
 
         // 辅助函数：计算实时网速
@@ -175,18 +166,6 @@
             return formatBytes(bytesDiff);
         }
 
-        function formatTimestampToTime(timestamp) {
-            const date = new Date(timestamp * 1000); // JavaScript中时间戳单位是毫秒，所以要乘以1000转换为秒
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份从0开始，需要加1
-            const day = date.getDate().toString().padStart(2, '0');
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            const seconds = date.getSeconds().toString().padStart(2, '0');
-
-            const formattedTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-            return formattedTime;
-        }
     </script>
 </body>
 
