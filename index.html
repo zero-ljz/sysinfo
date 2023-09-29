@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="System resource monitor, source code: https://github.com/zero-ljz/sysinfo">
     <link rel="icon" href="data:," />
-    <title>系统信息</title>
+    <title>System Resource Monitor</title>
     <style>
         /* 样式 */
         body {
@@ -37,7 +37,7 @@
 
             // 当 WebSocket 连接成功时
             socket.onopen = () => {
-                console.log(`WebSocket连接已建立: ${url}`);
+                console.log(`WebSocket connection opened: ${url}`);
             };
 
             // 当收到 WebSocket 消息时
