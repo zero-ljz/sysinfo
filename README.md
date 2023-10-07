@@ -3,7 +3,7 @@
 ``` bash
 # 克隆代码 && 进入项目目录 && 安装依赖
 git clone https://github.com/zero-ljz/sysinfo.git && cd sysinfo \
-&& pip3 install -r requirements.txt
+&& python3 -m pip install -r requirements.txt
 
 # 启动服务器并在后台运行
 nohup python3 $(pwd)/app.py --port 8000 &
