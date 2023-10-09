@@ -4,16 +4,18 @@
 # 克隆代码 && 进入项目目录
 git clone https://github.com/zero-ljz/sysinfo.git && cd sysinfo
 
-# 安装依赖
+# 创建、激活虚拟环境和安装依赖
+python3 -m venv .venv
+source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 # 或者 (python 11+)
 apt install python3-bottle python3-gevent-websocket python3-py-cpuinfo python3-psutil
 
 # 启动服务器并在后台运行
-nohup python3 $(pwd)/app.py --port 8000 &
+nohup $(pwd)/.venv/bin/python3 $(pwd)/app.py --port 8000 &
 
 # 终止运行
-pkill -f "python3 $(pwd)/app.py"
+pkill -f "$(pwd)/.venv/bin/python3 $(pwd)/app.py"
 ```
 
 **使用说明**  
